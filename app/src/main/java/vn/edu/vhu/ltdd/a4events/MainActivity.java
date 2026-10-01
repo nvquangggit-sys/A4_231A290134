@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText edtSoA, edtSoB, edtCanNang, edtChieuCao;
     private TextView tvKetQua, tvBmi, tvPhanLoai;
-
+    private TextView tvLichSu;
+    private final ArrayList<String> lichSu = new ArrayList<>();
+    private static final String KEY_LICH_SU = "lichSu";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,15 @@ public class MainActivity extends AppCompatActivity {
 
         btnPhanTram.setOnClickListener(v -> tinhPhanTram());
         btnDoiDau.setOnClickListener(v -> doiDau());
+        tvLichSu = findViewById(R.id.tvLichSu);
+
+        if (savedInstanceState != null) {
+            ArrayList<String> saved = savedInstanceState.getStringArrayList(KEY_LICH_SU);
+            if (saved != null) {
+                lichSu.addAll(saved);
+                tvLichSu.setText(String.join("\n", lichSu));
+            }
+        }
     }
 
     // =============== MÁY TÍNH ===============
@@ -119,9 +130,13 @@ public class MainActivity extends AppCompatActivity {
             default:  ketQua = a / b; break;
         }
 
-        tvKetQua.setText(String.format(Locale.getDefault(), "%.2f %c %.2f = %.2f",
-                a, phepToan, b, ketQua));
+        String dong = String.format(Locale.getDefault(), "%.2f %c %.2f = %.2f", a, phepToan, b, ketQua);
+        tvKetQua.setText(dong);
+        lichSu.add(0, dong);
+        if (lichSu.size() > 5) lichSu.remove(5);
+        tvLichSu.setText(String.join("\n", lichSu));
         Log.d(TAG, "Phép tính: " + a + " " + phepToan + " " + b + " = " + ketQua);
+
     }
 
     private void xoaTrang() {
@@ -190,5 +205,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Toast.makeText(this, R.string.err_not_number, Toast.LENGTH_SHORT).show();
         }
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(KEY_LICH_SU, lichSu);
     }
 }
