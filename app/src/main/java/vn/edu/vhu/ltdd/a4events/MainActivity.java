@@ -68,6 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
         btnXoa.setOnClickListener(v -> xoaTrang());
         btnTinhBmi.setOnClickListener(v -> tinhBmi());
+        Button btnPhanTram = findViewById(R.id.btnPhanTram);
+        Button btnDoiDau = findViewById(R.id.btnDoiDau);
+
+        btnPhanTram.setOnClickListener(v -> tinhPhanTram());
+        btnDoiDau.setOnClickListener(v -> doiDau());
     }
 
     // =============== MÁY TÍNH ===============
@@ -159,5 +164,31 @@ public class MainActivity extends AppCompatActivity {
         if (bmi < 23) return getString(R.string.bmi_normal);
         if (bmi < 25) return getString(R.string.bmi_over);
         return getString(R.string.bmi_obese);
+    }
+    private void tinhPhanTram() {
+        String chuoiA = edtSoA.getText().toString().trim();
+        if (chuoiA.isEmpty()) {
+            edtSoA.setError(getString(R.string.err_empty));
+            edtSoA.requestFocus();
+            return;
+        }
+        try {
+            double a = Double.parseDouble(chuoiA);
+            double ketQua = a / 100.0;
+            tvKetQua.setText(String.format(Locale.getDefault(), "%.2f%% = %.4f", a, ketQua));
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, R.string.err_not_number, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void doiDau() {
+        String chuoiA = edtSoA.getText().toString().trim();
+        if (chuoiA.isEmpty()) return;
+        try {
+            double a = Double.parseDouble(chuoiA);
+            edtSoA.setText(String.valueOf(-a));
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, R.string.err_not_number, Toast.LENGTH_SHORT).show();
+        }
     }
 }
