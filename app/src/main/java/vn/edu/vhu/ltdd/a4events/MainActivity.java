@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
 import java.util.Locale;
+import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -166,7 +167,15 @@ public class MainActivity extends AppCompatActivity {
 
             double bmi = canNang / (chieuCao * chieuCao);
             tvBmi.setText(String.format(Locale.getDefault(), "BMI = %.1f", bmi));
-            tvPhanLoai.setText(phanLoai(bmi));
+            String loai = phanLoai(bmi);
+            tvPhanLoai.setText(loai);
+            if (bmi < 23) {
+                tvPhanLoai.setTextColor(ContextCompat.getColor(this, R.color.bmi_normal_color));
+            } else if (bmi < 25) {
+                tvPhanLoai.setTextColor(ContextCompat.getColor(this, R.color.bmi_warning_color));
+            } else {
+                tvPhanLoai.setTextColor(ContextCompat.getColor(this, R.color.bmi_danger_color));
+            }
         } catch (NumberFormatException e) {
             Log.e(TAG, "Lỗi nhập liệu BMI", e);
             Toast.makeText(this, R.string.err_not_number, Toast.LENGTH_SHORT).show();
